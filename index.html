@@ -1,0 +1,89 @@
+<html><body>
+  <!-- This file is based on http://sandbox.freemap.sk/dynamic_poi/
+       That site is CC-BY-SA 2.0. If you are looking for examples to follow,
+       try that URL.
+       To the extend appropriate under US Law:
+
+       This program is free software: you can redistribute it and/or modify
+       it under the terms of the GNU General Public License as published by
+       the Free Software Foundation, either version 3 of the License, or
+       (at your option) any later version.
+
+       This program is distributed in the hope that it will be useful,
+       but WITHOUT ANY WARRANTY; without even the implied warranty of
+       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+       GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License
+       along with this program.  If not, see <http://www.gnu.org/licenses/>. -->
+  <div id="mapdiv"></div>
+  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script type="text/javascript" src="MarkerGrid.js"></script>
+  <script type="text/javascript" src="MarkerTile.js"></script>
+  <script type="text/javascript" src="bounds.js"></script>
+  <script>
+    var lat=38.4667;
+    var lon=-30;
+    var zoom=17;
+
+    if (navigator.geolocation)
+    {
+       navigator.geolocation.getCurrentPosition(setPosition, errorPos);
+    }
+
+    function setPosition(position)
+    {
+       this.lat = position.coords.latitude;
+       this.lon = position.coords.longitude;
+       setTimeout(setRealCenter, 10);
+    }
+
+   function errorPos(err) {
+    };
+
+   function get_poi_url (bounds) {
+      //bounds = this.adjustBounds(bounds);
+      var res = this.map.getResolution();
+      var path = "l=" + getLeft(bounds)
+      + "&t=" + getTop(bounds)
+      + "&r=" + getRight(bounds)
+      + "&b=" + getBottom(bounds)
+      var url = "http://www.sapphiresunday.org/owm/get_local_ap.php?";
+      return url + path;
+   }
+
+   function setRealCenter() {
+      //Set start centrepoint and zoom
+      var lonLat = new OpenLayers.LonLat( lon, lat)
+            .transform(
+              new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+              map.getProjectionObject() // to Spherical Mercator Projection
+            );
+      map.setCenter (lonLat, this.zoom);
+    }
+
+   map = new OpenLayers.Map("mapdiv")
+   maplayer = new OpenLayers.Layer.OSM();
+ 
+   // create POI layer
+   POI = new OpenLayers.Layer.MarkerGrid( "POI",
+   {
+      type:'txt',
+      getURL: get_poi_url,
+      attribution: "Open WLAN Map",
+      buffer: 0
+   });
+   POI.setIsBaseLayer(false);
+   POI.setVisibility(true);
+   map.addLayers([maplayer,POI]);
+
+   //Set start centrepoint and zoom
+   var lonLat = new OpenLayers.LonLat( -30, 38.4667 )
+         .transform(
+           new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+           map.getProjectionObject() // to Spherical Mercator Projection
+         );
+   map.setCenter (lonLat, zoom);
+   setTimeout(setRealCenter, 10);
+  </script>
+</body></html>
