@@ -1,4 +1,14 @@
-<html><body>
+<html><head>
+<meta name="viewport" content="width=device-width">
+<style type="text/css">
+@media only screen and (min-device-width : 480px) and (max-device-width : 800px) {
+  #moveto {
+    visibility: hidden;
+    display: none;
+  }
+}
+</style>
+</head><body>
   <!-- This file is based on http://sandbox.freemap.sk/dynamic_poi/
        That site is CC-BY-SA 2.0. If you are looking for examples to follow,
        try that URL.
@@ -16,12 +26,69 @@
 
        You should have received a copy of the GNU General Public License
        along with this program.  If not, see <http://www.gnu.org/licenses/>. -->
+  <div id="moveto">
+    <form>
+      Latitude: <input type="number" id="i_lat" size="10">&nbsp;&nbsp;&nbsp;&nbsp;
+      Longitude: <input type="number" id="i_lon" size="10">&nbsp;&nbsp;&nbsp;&nbsp;
+      Grid-Square:  <input type="number" id="i_grid" size="4">&nbsp;&nbsp;&nbsp;&nbsp;
+      <button onclick="forcePosition(); return false;">Move Map</button>
+    </form>
+    <script type="text/javascript">
+      // This is a simple translation of a function found at:
+      // http://en.wikipedia.org/wiki/Maidenhead_Locator_System
+      // (c) 2012 Chris Ruvolo.  Licensed under a 2-clause BSD license.
+      function grid2latlon(grid)
+      {
+         var lon = (grid.charCodeAt(0) - 'A'.charCodeAt(0)) * 20 - 180;
+         var lat = (grid.charCodeAt(1) - 'A'.charCodeAt(0)) * 10 - 90;
+         lon += (grid.charCodeAt(2) - '0'.charCodeAt(0)) * 2;
+         lat += (grid.charCodeAt(3) - '0'.charCodeAt(0)) * 1;
+
+         if (grid.length >= 5) {
+           lon += (grid.charCodeAt(4)  - 'a'.charCodeAt(0)) * 5/60;
+           lat += (grid.charCodeAt(5)  - 'a'.charCodeAt(0)) * 2.5/60;
+           // move to center of subsquare
+           lon += 2.5/60;
+           lat += 1.25/60;
+         } else {
+           // Move to center of square
+           lon += 1;
+           lat += 0.5;
+         }
+         return {
+           lon: lon,
+           lat: lat
+         };
+      }
+      function forcePosition()
+      {
+         var lat = this.document.getElementById("i_lat").value
+         var lon = this.document.getElementById("i_lon").value
+         var gs = this.document.getElementById("i_grid").value
+
+         if(lon != "" && lat != "")
+         {
+           this.lat = lat;
+           this.lon = lon;
+         }
+         else if(gs != null)
+         {
+           var data = grid2latlon(gs);
+           this.lat = data.lat;
+           this.lon = data.lon;
+         }
+         setRealCenter();
+
+         return false;
+      }
+      </script>
+  </div>
   <div id="mapdiv"></div>
   <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
   <script type="text/javascript" src="MarkerGrid.js"></script>
   <script type="text/javascript" src="MarkerTile.js"></script>
   <script type="text/javascript" src="bounds.js"></script>
-  <script>
+  <script type="text/javascript">
     var lat=38.4667;
     var lon=-30;
     var zoom=17;
