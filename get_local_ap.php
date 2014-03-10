@@ -34,6 +34,48 @@ function latlon2gs($lat, $lon)
 	return $grid;
 }
 
+function add_blocks($top, $left, $bottom, $right)
+{
+	$gs_used = array();
+        $lon_tick = doubleval(5)/doubleval(60);
+//	print "Lon tick $lon_tick\n";
+	$lat_tick = 2.5/60;
+//	print "Lat tick $lat_tick\n";
+
+	$lat_current = $top;
+
+	if($bottom > $top) $lat_direction = 1;
+	else $lat_direction = 0;
+
+	if($right > $left) $lon_direction = 1;
+	else $lon_direction = 0;
+
+	do {
+		$lon_current = $left;
+		do {
+//			print "Lon: $lon_current $right\n";
+			$gs_used[] = latlon2gs($lat_current, $lon_current);
+			if(abs($lon_current - $right) > $lon_tick)
+			{
+				if($lon_direction) $lon_current = $lon_current + $lon_tick;
+				else $lon_current = $lon_current - $lon_tick;
+//				print "Lon (inner): $lon_current $right\n";
+			}
+		} while(abs($lon_current - $right) > $lon_tick);
+		$gs_used = array_unique($gs_used);
+		$gs_used[] = latlon2gs($lat_current, $lon_current);
+//		print "Lat: $lat_current $bottom\n";
+		if(abs($lat_current - $bottom) > $lat_tick)
+		{
+
+			if($lat_direction) $lat_current += $lat_tick;
+			else $lat_current -= $lat_tick;
+//			print "Lat (inner): $lat_current $bottom\n";
+		}
+	} while(abs($lat_current - $bottom) > $lat_tick);
+	return $gs_used;
+}
+
 $gs_used = array();
 
 $right = doubleval($_GET["r"]);
@@ -45,6 +87,8 @@ $name="";
 $lat="";
 $long="";
 $data="";
+
+$gs_used = add_blocks($top, $left, $bottom, $right);
 
 $gs_used[] = latlon2gs($top, $left);
 $gs_used[] = latlon2gs($top, $right);
