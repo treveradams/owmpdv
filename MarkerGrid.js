@@ -1,11 +1,12 @@
 /* Copyright (c) 2006-2007 MetaCarta, Inc., published under a modified BSD license.
- * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt 
- * for the full text of the license. */
+ * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt
+ * for the full text of the license.
+ * Porting to newer OpenLayer.js Copyright (c) 2013-2014 Trever L. Adams */
 
 
 /**
  * @requires OpenLayers/Layer.js
- * 
+ *
  * Class: OpenLayers.Layer.MarkerGrid
  * Base class for layers that use a lattice of tiles.  Create a new grid
  * layer with the <OpenLayers.Layer.MarkerGrid> constructor.
@@ -14,7 +15,6 @@
  *  - <OpenLayers.Layer>
  */
 OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
-    
 
     /**
      * APIProperty: isBaseLayer
@@ -22,7 +22,7 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
      */
     isBaseLayer: true,
 
-	 /**
+    /**
      * APIProperty: tileOrigin
      * {<OpenLayers.Pixel>}
      */
@@ -33,7 +33,6 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
      * Array({<OpenLayers.Marker>}) internal marker list
      */
     markers: null,
-
 
     /**
      * Property: drawn
@@ -53,7 +52,6 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
-       
         var newArguments = [];
         newArguments.push(name, null, {}, options);
         OpenLayers.Layer.Grid.prototype.initialize.apply(this, newArguments);
@@ -61,18 +59,20 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
     },
 
     /**
+     * Method: createBackBuffer
+     * The MarkerGrid cannot create a back buffer, so this method is overriden.
+     */
+    createBackBuffer: function() {},
+
+    /**
      * APIMethod: destroy
      * Deconstruct the layer and clear the grid.
      */
     destroy: function() {
-        
-		this.clearGrid();
-
-		if (this.markers.lenght>0) this.clearMarkers();
-
+        this.clearGrid();
+        if (this.markers.lenght>0) this.clearMarkers();
         this.markers = null;
-
-		OpenLayers.Layer.Grid.prototype.destroy.apply(this, arguments);  
+        OpenLayers.Layer.Grid.prototype.destroy.apply(this, arguments);
     },
 
     /**
@@ -80,12 +80,11 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
      *
      * Parameters:
      * obj - {Object} Is this ever used?
-     * 
+     *
      * Returns:
      * {<OpenLayers.Layer.MarkerGrid>} An exact clone of this OpenLayers.Layer.MarkerGrid
      */
     clone: function (obj) {
-        
         if (obj == null) {
             obj = new OpenLayers.Layer.MarkerGrid(this.name,
                                             this.options);
@@ -98,7 +97,7 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
         obj.markers=[];
 
         return obj;
-    },    
+    },
 
     /**
      * Method: moveTo
@@ -122,8 +121,7 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
         }
     },
 
-
-     /**
+    /**
      * Method: getUrl
      *
      * Parameters:
@@ -140,12 +138,9 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
 
     },
 
-
-
-
     /**
      * APIMethod: addTile
-     * Gives subclasses of Grid the opportunity to create an 
+     * Gives subclasses of Grid the opportunity to create an
      *
      * Parameters:
      * bounds - {<OpenLayers.Bounds>}
@@ -159,25 +154,22 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
             return new OpenLayers.Tile.MarkerTile(this, position, bounds,
                                                              null, this.tileSize);
     },
-    
 
-    /** 
+    /**
      * APIMethod: setMap
-     * When the layer is added to a map, then we can fetch our origin 
-     *    (if we don't have one.) 
-     * 
+     * When the layer is added to a map, then we can fetch our origin
+     *    (if we don't have one.)
+     *
      * Parameters:
      * map - {<OpenLayers.Map>}
      */
     setMap: function(map) {
         OpenLayers.Layer.Grid.prototype.setMap.apply(this, arguments);
-        
-        if (!this.tileOrigin) { 
+        if (!this.tileOrigin) {
             this.tileOrigin = new OpenLayers.LonLat(this.map.maxExtent.left,
                                                 this.map.maxExtent.bottom);
-        }                                       
+        }
     },
-
 
     Refresh: function() {
     // total bounds of the tiles
@@ -185,7 +177,7 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
             this.initGriddedTiles(tilesBounds);
     },
 
-     /**
+    /**
      * APIMethod: addMarker
      *
      * Parameters:
@@ -247,6 +239,6 @@ OpenLayers.Layer.MarkerGrid = OpenLayers.Class(OpenLayers.Layer.Grid, {
             }
         }
     },
-    
+
     CLASS_NAME: "OpenLayers.Layer.MarkerGrid"
 });

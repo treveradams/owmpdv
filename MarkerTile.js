@@ -1,12 +1,12 @@
 /* Copyright (c) 2006-2007 MetaCarta, Inc., published under a modified BSD license.
- * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt 
+ * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt
  * for the full text of the license.
- * Porting to newer OpenLayer.js Copyright (c) 2013 Trever L. Adams */
+ * Porting to newer OpenLayer.js Copyright (c) 2013-2014 Trever L. Adams */
 
- 
+
 /**
  * @requires OpenLayers/Tile.js
- * 
+ *
  * Class: OpenLayers.Tile.MarkerTile
  * Instances of OpenLayers.Tile.MarkerTile are used to manage the image tiles
  * used by various layers.  Create a new image tile with the
@@ -17,40 +17,40 @@
  */
 OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
 
-    /** 
-     * Property: features 
-     * {Array(<OpenLayers.Feature>)} list of features in this tile 
+    /**
+     * Property: features
+     * {Array(<OpenLayers.Feature>)} list of features in this tile
      */
     features: null,
 
-    /** 
-     * Property: url 
-     * {String} 
+    /**
+     * Property: url
+     * {String}
      */
     url: null,
-    
-    /** TBD 3.0 - reorder the parameters to the init function to put URL 
-     *             as last, so we can continue to call tile.initialize() 
-     *             without changing the arguments. 
-     * 
+
+    /** TBD 3.0 - reorder the parameters to the init function to put URL
+     *             as last, so we can continue to call tile.initialize()
+     *             without changing the arguments.
+     *
      * Constructor: OpenLayers.Tile.MarkerTile
      * Constructor for a new <OpenLayers.Tile.MarkerTile> instance.
-     * 
+     *
      * Parameters:
      * layer - {<OpenLayers.Layer>} layer that the tile will go in.
      * position - {<OpenLayers.Pixel>}
      * bounds - {<OpenLayers.Bounds>}
      * url - {<String>}
      * size - {<OpenLayers.Size>}
-     */   
+     */
     initialize: function(layer, position, bounds, url, size) {
         OpenLayers.Tile.prototype.initialize.apply(this, arguments);
-        this.url = url;        
+        this.url = url;
         this.layer = layer;
         this.features = [];
     },
 
-    /** 
+    /**
      * APIMethod: destroy
      * nullify references to prevent circular references and memory leaks
      */
@@ -61,19 +61,19 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
 
     },
 
-    /** 
+    /**
      * Method: clear
-     *  Clear the tile of any bounds/position-related data so that it can 
-     *   be reused in a new location.
+     *  Clear the tile of any bounds/position-related data so that it can
+     *  be reused in a new location.
      */
     clear: function() {
         this.destroyAllFeatures();
     },
-    
+
     /**
      * Method: draw
      * Check that a tile should be drawn, and load features for it.
-     * 
+     *
      * Returns:
      * {Boolean} Always returns true.
      */
@@ -87,7 +87,7 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
         }
 
         if (!OpenLayers.Tile.prototype.draw.apply(this, arguments)) {
-            return false; 
+            return false;
         }
 
         if (this.isLoading) {
@@ -107,8 +107,8 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
         return true;
     //-------------------------------------------------
     },
-    
-        /**
+
+    /**
      * Method: moveTo
      * Reposition the tile.
      *
@@ -119,22 +119,17 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
      *     Default is true
      */
     moveTo: function (bounds, position, redraw) {
-
         this.destroyAllFeatures();
-            
         OpenLayers.Tile.prototype.moveTo.apply(this, arguments);
-
         this.url = this.layer.getURL(this.bounds);
-
         this.loadFeaturesForRegion(this.requestSuccess, this.requestFailure);
-
     },
 
 
-    /** 
+   /**
     * Method: loadFeaturesForRegion
-    * get the full request string from the ds and the tile params 
-    *     and call the AJAX loadURL(). 
+    * get the full request string from the ds and the tile params
+    *     and call the AJAX loadURL().
     *
     * Input are function pointers for what to do on success and failure.
     *
@@ -150,10 +145,10 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
           failure:failure,
           scope:this});
     },
-    
-    /**
+
+   /**
     * Method: requestSuccess
-    * Called on return from request succcess. Adds results via 
+    * Called on return from request succcess. Adds results via
     *
     * Parameters:
     * request - {XMLHttpRequest}
@@ -164,9 +159,7 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
     },
 
     requestSuccess: function(request) {
-    
         this.clear();
-    
         var text = request.responseText;
         var lines = text.split('\n');
         var columns;
@@ -176,7 +169,7 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
         // length - 1 to allow for trailing new line
         for (var lcv = 0; lcv < (lines.length - 1); lcv++) {
             var currLine = lines[lcv].replace(/^\s*/,'').replace(/\s*$/,'');
-            
+
             if (currLine.charAt(0) != '#') { /* not a comment */
 
                 if (!columns) {
@@ -192,7 +185,7 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
                     description=null;
 
                     var set = false;
-                    
+
                     for (var valIndex = 0; valIndex < vals.length; valIndex++) {
                         if (vals[valIndex]) {
                             if (columns[valIndex] == 'point') {
@@ -228,20 +221,19 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
                     }
                     if (set) {
                       var data = {};
-                      
-                       var PI = 3.14159265358979323846;
-                        // MERCATORIZE
-                       
-                       mylocation.lon = mylocation.lon * 20037508.34 / 180;
-                       mylocation.lat = (Math.log(Math.tan( (90 + mylocation.lat) * PI / 360)) / (PI / 180)) * 20037508.34 / 180;
-                       
-                       //location.lat = this.bounds.left;
-                       //location.lon = this.bounds.top;
-                       // var near_icon = OpenLayers.Marker.defaultIcon();
 
-                       //marker = new OpenLayers.Marker(new OpenLayers.LonLat(lon_map, lat_map),near_icon.clone());
+                      var PI = 3.14159265358979323846;
+                      // MERCATORIZE
 
-                       
+                      mylocation.lon = mylocation.lon * 20037508.34 / 180;
+                      mylocation.lat = (Math.log(Math.tan( (90 + mylocation.lat) * PI / 360)) / (PI / 180)) * 20037508.34 / 180;
+
+                      //location.lat = this.bounds.left;
+                      //location.lon = this.bounds.top;
+                      //var near_icon = OpenLayers.Marker.defaultIcon();
+
+                      //marker = new OpenLayers.Marker(new OpenLayers.LonLat(lon_map, lat_map),near_icon.clone());
+
                       if (url != null) {
                           data.icon = new OpenLayers.Icon(url, iconSize, iconOffset);
                       } else {
@@ -258,7 +250,7 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
                       if ((title != null) && (description != null)) {
                           data['popupContentHTML'] = '<b>'+title+'</b><br/>'+description;
                       }
-                      
+
                       if (popupSize != null) {
                          data.popupSize = popupSize;
                       }
@@ -283,14 +275,15 @@ OpenLayers.Tile.MarkerTile = OpenLayers.Class(OpenLayers.Tile, {
             this.events.triggerEvent("loadend");
         }
     },
-       /**
+
+    /**
      * Property: markerClick
      *
      * Parameters:
      * evt - {Event}
      */
      //!!!dodi - registrovana funckia pre click na POI
-   markerClick: function(evt) {
+    markerClick: function(evt) {
 
         sameMarkerClicked = (this == this.layer.selectedFeature);
         this.layer.selectedFeature = (!sameMarkerClicked) ? this : null;

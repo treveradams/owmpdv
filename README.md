@@ -27,17 +27,19 @@ been done, but that there are none detected or present.
 
 Usage Caveats
 -------------
-* Do NOT zoom out. You will likely cause what appears to be an infinite loop in your
-browser. This is actually just JavaScript being slow with the Open Layers code and with
-the MakerTile code that extends it.
-* Do NOT zoom in. Sure, you can test it. However, this tends to cause the same type of
-problem.
+* Do NOT zoom out too far. You will likely cause what appears to be an infinite loop in
+your browser. This is actually just JavaScript being slow with the Open Layers code and
+with the MakerTile code that extends it. (This isn't as critical as it used to be!)
 * You can scroll around the same way you would on a normal web map.
+
+If you are wanting to change icons, etc. I believe the code is straightforward. If in doubt,
+see documentation at http://wiki.openstreetmap.org/wiki/OpenLayers_Dynamic_POI.
 
 Licensing Caveats
 -----------------
 Please, be aware, many of the JavaScript files are under a different F/OSS license.
-MarkerTile.js has been fixed to work with newer OpenLayer.js versions than the original.
+MarkerTile.js and MarkerGrid.js have been fixed to work with newer OpenLayer.js
+versions than the original.
 
 The icons found here were part of the example at http://sandbox.freemap.sk/dynamic_poi/
 on which some of this project were based. Those icons are licensed as CC-BY-SA 2.0.
