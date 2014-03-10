@@ -17,6 +17,9 @@ You will need to use the owmdb2gsdb.py script by myself to convert the Open
 WLAN Map public database into smaller, easier to use, files. Copy the gsdb directory
 (not just the files) into the same directory as the HTML and code found in this project.
 
+In index.html, you will need to edit the following string to be suitable for your installation:
+'var url = "http://your_domain_here/path_to_owmpdv/get_local_ap.php?";'
+
 Interpretation Caveats
 ----------------------
 * Understand, there is no time/date stamps in the public database, so you can only
