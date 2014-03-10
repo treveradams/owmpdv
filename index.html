@@ -112,10 +112,12 @@
    function get_poi_url (bounds) {
       //bounds = this.adjustBounds(bounds);
       var res = this.map.getResolution();
+      var z = this.map.getZoom();
       var path = "l=" + getLeft(bounds)
       + "&t=" + getTop(bounds)
       + "&r=" + getRight(bounds)
       + "&b=" + getBottom(bounds)
+      + "&z=" + z
       var url = "http://your_domain_here/path_to_owmpdv/get_local_ap.php?";
       return url + path;
    }

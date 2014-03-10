@@ -82,6 +82,7 @@ $right = doubleval($_GET["r"]);
 $left = doubleval($_GET["l"]);
 $top = doubleval($_GET["t"]);
 $bottom = doubleval($_GET["b"]);
+$zoom = intval($_GET["z"]);
 $members = array();
 $name="";
 $lat="";
@@ -119,7 +120,9 @@ foreach ($gs_used as &$value)
          $long = doubleval($long);
          if($lat >= $bottom && $lat <= $top && $long >= $left && $long <= $right)
          {
-             print "$lat\t$long\tOl_icon_red_example.png\t16,16\t8,8\t$name\t$name\t200,80\n";
+             if($zoom<=11) print "$lat\t$long\tOl_icon_red_micro_poi.png\t1,1\t0,0\t\t\t200,80\n";
+             else if($zoom<=14) print "$lat\t$long\tOl_icon_red_small_poi.png\t2,2\t1,1\t\t\t200,80\n";
+             else print "$lat\t$long\tOl_icon_red_example.png\t16,16\t8,8\t$name\t$name\t200,80\n";
          }
       }
    }
