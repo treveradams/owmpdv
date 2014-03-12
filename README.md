@@ -18,7 +18,9 @@ WLAN Map public database into smaller, easier to use, files. Copy the gsdb direc
 (not just the files) into the same directory as the HTML and code found in this project.
 
 In index.html, you will need to edit the following string to be suitable for your installation:
-'var url = "http://your_domain_here/path_to_owmpdv/get_local_ap.php?";'
+'var url = "http://web_server_fqdn/path_to_owmpdv/get_local_ap.php?";'
+
+Other variables of interest in index.html are minimum_zoom_display and maximum_zoom_prune.
 
 Interpretation Caveats
 ----------------------

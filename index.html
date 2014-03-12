@@ -92,7 +92,12 @@
   <script type="text/javascript">
     var lat=38.4667;
     var lon=-30;
+    // Default Zoom
     var zoom=17;
+    // Any zoom level below this will not show access points
+    var minimum_zoom_display=0;
+    // Any zoom level above this will not be pruned
+    var maximum_zoom_prune=-1;
 
     if (navigator.geolocation)
     {
@@ -118,7 +123,10 @@
       + "&r=" + getRight(bounds)
       + "&b=" + getBottom(bounds)
       + "&z=" + z
-      var url = "http://your_domain_here/path_to_owmpdv/get_local_ap.php?";
+      + "&res=" + res
+      + "&mzd=" + minimum_zoom_display
+      + "&mzp=" + maximum_zoom_prune
+      var url = "http://web_server_fqdn/path_to_owmpdv/get_local_ap.php?";
       return url + path;
    }
 
@@ -132,7 +140,7 @@
       map.setCenter (lonLat, this.zoom);
     }
 
-   map = new OpenLayers.Map("mapdiv")
+   map = new OpenLayers.Map("mapdiv", {units: "ft", projection: new OpenLayers.Projection("EPSG:900913"), displayProjection: new OpenLayers.Projection("EPSG:4326")});
    maplayer = new OpenLayers.Layer.OSM();
  
    // create POI layer
