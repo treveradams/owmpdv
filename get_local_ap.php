@@ -214,7 +214,7 @@ if($min_zoom_display <= $zoom)
            fclose($file);
        }
        else {
-           if($res >= 25000)
+           if($res >= 19500)
            {
                list ($lat, $long) = gs2latlon($value);
                $lat = doubleval($lat);
@@ -264,7 +264,7 @@ if($min_zoom_display <= $zoom)
                }
                else {
                    $broken = 0;
-                   for($i=0; $i<=$last_used; $i++)
+                   for($i=$last_used; $i>=0; $i--)
                    {
                        if(distance($good[$i]["lat"], $good[$i]["long"], $temp["lat"], $temp["long"]) < $res) { $broken = 1; break; }
                    }
@@ -302,7 +302,7 @@ if($min_zoom_display <= $zoom)
                        else if($lat >= $bottom && $lat <= $top && $long >= $left && $long <= $right)
                        {
                            $broken = 0;
-                           for($i=0; $i<=$last_used; $i++)
+                           for($i=$last_used; $i>=0; $i--)
                            {
                                if(distance($good[$i]["lat"], $good[$i]["long"], $lat, $long) < $res) { $broken = 1; break; }
                            }
